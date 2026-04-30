@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopiCI — Bienvenue</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --blue: #1E3A8A;
+      --blue-mid: #2563EB;
+      --blue-light: #3B82F6;
+      --blue-pale: #EFF6FF;
+      --blue-ultra: #F0F7FF;
+      --white: #FFFFFF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --border: #DBEAFE;
+      --gray: #F8FAFC;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: linear-gradient(150deg, var(--white) 0%, var(--blue-ultra) 50%, var(--blue-pale) 100%); min-height: 100vh; display: flex; flex-direction: column; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 6%; background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--border); box-shadow: 0 1px 16px rgba(30,58,138,0.06); }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--blue); text-decoration: none; }
+    .logo span { color: var(--blue-light); }
+    .nav-steps { display: flex; align-items: center; gap: 8px; }
+    .step { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); }
+    .step.active { color: var(--blue); font-weight: 700; }
+    .step.done { color: var(--blue-light); }
+    .step-num { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; }
+    .step.active .step-num { background: var(--blue); border-color: var(--blue); color: white; }
+    .step.done .step-num { background: var(--blue-light); border-color: var(--blue-light); color: white; }
+    .step-divider { width: 32px; height: 1px; background: var(--border); }
+    .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px; }
+    .welcome-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 100px; background: var(--blue-pale); border: 1.5px solid var(--border); font-size: 0.8rem; color: var(--blue); font-weight: 600; margin-bottom: 20px; }
+    .main-title { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; color: var(--text); text-align: center; letter-spacing: -1px; margin-bottom: 10px; }
+    .main-title span { color: var(--blue); }
+    .main-sub { font-size: 0.95rem; color: var(--muted); text-align: center; max-width: 480px; line-height: 1.6; margin-bottom: 48px; }
+    .choices-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 800px; width: 100%; margin-bottom: 32px; }
+    .choice-card { background: white; border: 2px solid var(--border); border-radius: 20px; padding: 32px 24px; text-align: center; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+    .choice-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); transform: scaleX(0); transition: transform 0.25s; }
+    .choice-card:hover { border-color: var(--blue-light); transform: translateY(-6px); box-shadow: 0 16px 40px rgba(30,58,138,0.12); }
+    .choice-card:hover::before { transform: scaleX(1); }
+    .choice-card.selected { border-color: var(--blue); background: var(--blue-ultra); transform: translateY(-6px); box-shadow: 0 16px 40px rgba(30,58,138,0.15); }
+    .choice-card.selected::before { transform: scaleX(1); }
+    .choice-check { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; background: var(--blue); color: white; font-size: 0.85rem; display: none; align-items: center; justify-content: center; }
+    .choice-card.selected .choice-check { display: flex; }
+    .choice-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .choice-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .choice-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .choice-features { list-style: none; text-align: left; }
+    .choice-features li { font-size: 0.78rem; color: var(--muted); padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+    .choice-features li::before { content: '✓'; color: var(--blue); font-weight: 700; font-size: 0.75rem; flex-shrink: 0; }
+    .choice-badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 0.68rem; font-weight: 700; margin-bottom: 12px; }
+    .badge-popular { background: var(--blue-pale); color: var(--blue); }
+    .badge-new { background: #FEF3C7; color: #D97706; }
+    .badge-pro { background: #F0FDF4; color: #15803D; }
+    .badge-transfer { background: #F5F3FF; color: #7C3AED; }
+    .continue-wrap { text-align: center; }
+    .btn-continue { padding: 14px 48px; border-radius: 12px; border: none; background: var(--blue); color: white; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 20px rgba(30,58,138,0.25); opacity: 0.5; pointer-events: none; }
+    .btn-continue.active { opacity: 1; pointer-events: all; }
+    .btn-continue.active:hover { background: var(--blue-mid); transform: translateY(-2px); }
+    .skip-link { display: block; margin-top: 16px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s; cursor: pointer; }
+    .skip-link:hover { color: var(--blue); }
+    .page-footer { text-align: center; padding: 20px; font-size: 0.78rem; color: var(--muted); }
+    .page-footer a { color: var(--blue); text-decoration: none; }
+    @media (max-width: 640px) { .choices-grid { grid-template-columns: 1fr; } .nav-steps { display: none; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Shopi<span>CI</span></a>
+    <div class="nav-steps">
+      <div class="step done">
+        <div class="step-num">✓</div>
+        <span>Inscription</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step active">
+        <div class="step-num">2</div>
+        <span>Type de vente</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <span>Ma boutique</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <span>Dashboard</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="welcome-badge">👋 Bienvenue sur ShopiCI</div>
+    <h1 class="main-title">Comment veux-tu<br><span>vendre tes produits ?</span></h1>
+    <p class="main-sub">Choisis le mode qui correspond à ton activité. Tu pourras toujours changer plus tard depuis ton dashboard.</p>
+
+    <div class="choices-grid">
+
+      <div class="choice-card" onclick="selectChoice(this, 'online')">
+        <div class="choice-check">✓</div>
+        <span class="choice-icon">🌐</span>
+        <div class="choice-badge badge-popular">⭐ Le plus populaire</div>
+        <div class="choice-title">Vente en ligne uniquement</div>
+        <div class="choice-desc">Tu vends tes produits sur internet. Tes clients commandent depuis n'importe quelle ville de Côte d'Ivoire.</div>
+        <ul class="choice-features">
+          <li>Boutique en ligne complète</li>
+          <li>Paiement Orange Money MTN Wave</li>
+          <li>Livraison via Yango partout en CI</li>
+          <li>Gestion des commandes en ligne</li>
+        </ul>
+      </div>
+
+      <div class="choice-card" onclick="selectChoice(this, 'physical')">
+        <div class="choice-check">✓</div>
+        <span class="choice-icon">🏪</span>
+        <div class="choice-badge badge-new">🆕 Nouveau</div>
+        <div class="choice-title">Vente en boutique physique</div>
+        <div class="choice-desc">Tu as un magasin physique. ShopiCI t'aide à gérer tes ventes sur place avec notre système POS.</div>
+        <ul class="choice-features">
+          <li>Système de caisse POS intégré</li>
+          <li>Paiement cash et Mobile Money</li>
+          <li>Gestion de stock automatique</li>
+          <li>Reçus SMS pour tes clients</li>
+        </ul>
+      </div>
+
+      <div class="choice-card" onclick="selectChoice(this, 'both')">
+        <div class="choice-check">✓</div>
+        <span class="choice-icon">🌐🏪</span>
+        <div class="choice-badge badge-pro">💎 Recommandé</div>
+        <div class="choice-title">En ligne ET en boutique</div>
+        <div class="choice-desc">Tu combines les deux. Tu vends en ligne et dans ton magasin — tout est synchronisé automatiquement.</div>
+        <ul class="choice-features">
+          <li>Boutique en ligne + POS combinés</li>
+          <li>Stock synchronisé en temps réel</li>
+          <li>Dashboard unifié tout en un</li>
+          <li>Maximum de clients et de ventes</li>
+        </ul>
+      </div>
+
+      <div class="choice-card" onclick="selectChoice(this, 'transfer')">
+        <div class="choice-check">✓</div>
+        <span class="choice-icon">🔄</span>
+        <div class="choice-badge badge-transfer">Migration</div>
+        <div class="choice-title">Transférer ma boutique existante</div>
+        <div class="choice-desc">Tu vends déjà sur WhatsApp ou Instagram. On t'aide à migrer facilement vers ShopiCI.</div>
+        <ul class="choice-features">
+          <li>Import de tes produits existants</li>
+          <li>Migration depuis WhatsApp Instagram</li>
+          <li>Tes clients reçoivent le nouveau lien</li>
+          <li>Aucune perte de données</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="continue-wrap">
+      <button class="btn-continue" id="btn-continue" onclick="continuer()">Continuer →</button>
+      <span class="skip-link" onclick="window.location.href='dashboard.html'">Passer cette étape pour l'instant</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <a href="login.html">← Retour</a> &nbsp;·&nbsp; © 2025 ShopiCI · Abidjan 🇨🇮
+  </div>
+
+  <script>
+    let selectedChoice = null;
+    function selectChoice(card, type) {
+      document.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedChoice = type;
+      document.getElementById('btn-continue').classList.add('active');
+    }
+    function continuer() {
+      if (!selectedChoice) return;
+      localStorage.setItem('shopici_type', selectedChoice);
+      window.location.href = 'dashboard.html';
+    }
+  </script>
+
+</body>
+</html>
