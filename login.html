@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopiCI — Connexion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --blue: #1E3A8A;
+      --blue-mid: #2563EB;
+      --blue-light: #3B82F6;
+      --blue-pale: #EFF6FF;
+      --blue-ultra: #F0F7FF;
+      --white: #FFFFFF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --border: #DBEAFE;
+      --gray: #F8FAFC;
+      --error: #EF4444;
+      --success: #22C55E;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: linear-gradient(150deg, var(--white) 0%, var(--blue-ultra) 50%, var(--blue-pale) 100%); min-height: 100vh; display: flex; flex-direction: column; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 6%; background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--border); box-shadow: 0 1px 16px rgba(30,58,138,0.06); }
+    .logo { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--blue); text-decoration: none; }
+    .logo span { color: var(--blue-light); }
+    .nav-right { font-size: 0.88rem; color: var(--muted); }
+    .nav-right a { color: var(--blue); text-decoration: none; font-weight: 600; }
+    .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .auth-container { width: 100%; max-width: 440px; }
+    .tabs { display: flex; background: white; border-radius: 14px 14px 0 0; border: 1px solid var(--border); border-bottom: none; overflow: hidden; }
+    .tab-btn { flex: 1; padding: 16px; border: none; background: transparent; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--muted); cursor: pointer; transition: all 0.2s; border-bottom: 3px solid transparent; }
+    .tab-btn.active { color: var(--blue); background: var(--blue-ultra); border-bottom-color: var(--blue); }
+    .auth-card { background: white; border-radius: 0 0 20px 20px; border: 1px solid var(--border); border-top: none; padding: 32px 32px 28px; box-shadow: 0 20px 60px rgba(30,58,138,0.1); }
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+    .form-title { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .form-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; }
+    .input-group { margin-bottom: 16px; }
+    .input-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .input-wrap { position: relative; }
+    .input-wrap input { width: 100%; padding: 12px 16px 12px 42px; border-radius: 10px; border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: var(--gray); }
+    .input-wrap input:focus { border-color: var(--blue-light); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); background: white; }
+    .input-wrap input::placeholder { color: var(--muted); }
+    .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1rem; }
+    .input-wrap input.error { border-color: var(--error); }
+    .error-msg { font-size: 0.75rem; color: var(--error); margin-top: 4px; display: none; }
+    .error-msg.show { display: block; }
+    .toggle-password { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1rem; color: var(--muted); }
+    .forgot-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .remember-label { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--muted); cursor: pointer; }
+    .remember-label input[type="checkbox"] { accent-color: var(--blue); }
+    .forgot-link { font-size: 0.82rem; color: var(--blue); text-decoration: none; font-weight: 600; }
+    .btn-submit { width: 100%; padding: 13px; border-radius: 10px; border: none; background: var(--blue); color: white; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; }
+    .btn-submit:hover { background: var(--blue-mid); transform: translateY(-1px); }
+    .btn-submit.loading { opacity: 0.7; cursor: not-allowed; }
+    .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-text { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+    .social-btn { width: 100%; padding: 11px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: white; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; transition: all 0.2s; color: var(--text); }
+    .social-btn:hover { border-color: var(--blue-light); background: var(--blue-ultra); }
+    .social-btn:last-of-type { margin-bottom: 0; }
+    .s-icon { font-size: 1.2rem; }
+    .s-text { flex: 1; text-align: left; }
+    .s-arrow { font-size: 0.75rem; color: var(--muted); }
+    .terms { font-size: 0.72rem; color: var(--muted); text-align: center; margin-top: 20px; line-height: 1.6; }
+    .terms a { color: var(--blue); text-decoration: none; font-weight: 600; }
+    .password-strength { margin-top: 8px; display: none; }
+    .password-strength.show { display: block; }
+    .strength-bars { display: flex; gap: 4px; margin-bottom: 4px; }
+    .strength-bar { flex: 1; height: 4px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+    .strength-bar.weak { background: var(--error); }
+    .strength-bar.medium { background: #F59E0B; }
+    .strength-bar.strong { background: var(--success); }
+    .strength-text { font-size: 0.72rem; color: var(--muted); }
+    .success-box { display: none; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 16px; }
+    .success-box.show { display: block; }
+    .success-box p { font-size: 0.88rem; color: #15803D; font-weight: 500; }
+    .page-footer { text-align: center; padding: 20px; font-size: 0.78rem; color: var(--muted); }
+    .page-footer a { color: var(--blue); text-decoration: none; }
+    @media (max-width: 480px) { .auth-card { padding: 24px 20px; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">Shopi<span>CI</span></a>
+    <div class="nav-right">
+      Pas encore de compte ? <a href="#" onclick="switchTab('inscription')">S'inscrire gratuitement</a>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="auth-container">
+      <div class="tabs">
+        <button class="tab-btn active" id="tab-connexion" onclick="switchTab('connexion')">Se connecter</button>
+        <button class="tab-btn" id="tab-inscription" onclick="switchTab('inscription')">Créer un compte</button>
+      </div>
+      <div class="auth-card">
+
+        <!-- CONNEXION -->
+        <div class="form-panel active" id="panel-connexion">
+          <div class="form-title">Bon retour ! 👋</div>
+          <div class="form-sub">Connecte-toi à ton espace ShopiCI</div>
+          <div class="input-group">
+            <label class="input-label">Adresse email</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="login-email" placeholder="ton@email.com"/>
+            </div>
+            <div class="error-msg" id="err-login-email">Adresse email invalide</div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Mot de passe</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="login-password" placeholder="Ton mot de passe"/>
+              <button class="toggle-password" onclick="togglePwd('login-password', this)">👁️</button>
+            </div>
+            <div class="error-msg" id="err-login-password">Mot de passe incorrect</div>
+          </div>
+          <div class="forgot-row">
+            <label class="remember-label"><input type="checkbox"/> Se souvenir de moi</label>
+            <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+          </div>
+          <button class="btn-submit" id="btn-login" onclick="handleLogin()">Se connecter →</button>
+          <div class="divider"><div class="divider-line"></div><div class="divider-text">Ou continue avec</div><div class="divider-line"></div></div>
+          <button class="social-btn" onclick="window.location.href='onboarding.html'"><span class="s-icon">📘</span><span class="s-text">Continuer avec Facebook</span><span class="s-arrow">→</span></button>
+          <button class="social-btn" onclick="window.location.href='onboarding.html'"><span class="s-icon">🎵</span><span class="s-text">Continuer avec TikTok</span><span class="s-arrow">→</span></button>
+          <button class="social-btn" onclick="window.location.href='onboarding.html'"><span class="s-icon">📸</span><span class="s-text">Continuer avec Instagram</span><span class="s-arrow">→</span></button>
+        </div>
+
+        <!-- INSCRIPTION -->
+        <div class="form-panel" id="panel-inscription">
+          <div class="form-title">Crée ton compte 🚀</div>
+          <div class="form-sub">Gratuit — Aucune carte bancaire requise</div>
+          <div class="success-box" id="success-box">
+            <p>✅ Compte créé avec succès ! Redirection en cours...</p>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Prénom et nom</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="reg-name" placeholder="Ex : Roméo Koffi"/>
+            </div>
+            <div class="error-msg" id="err-reg-name">Merci d'entrer ton nom complet</div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Adresse email</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="reg-email" placeholder="ton@email.com"/>
+            </div>
+            <div class="error-msg" id="err-reg-email">Adresse email invalide</div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Numéro de téléphone</label>
+            <div class="input-wrap">
+              <span class="input-icon">📱</span>
+              <input type="tel" id="reg-phone" placeholder="+225 07 XX XX XX XX"/>
+            </div>
+            <div class="error-msg" id="err-reg-phone">Numéro de téléphone invalide</div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Mot de passe</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="reg-password" placeholder="Minimum 8 caractères" oninput="checkStrength(this)"/>
+              <button class="toggle-password" onclick="togglePwd('reg-password', this)">👁️</button>
+            </div>
+            <div class="password-strength" id="strength-box">
+              <div class="strength-bars">
+                <div class="strength-bar" id="bar1"></div>
+                <div class="strength-bar" id="bar2"></div>
+                <div class="strength-bar" id="bar3"></div>
+                <div class="strength-bar" id="bar4"></div>
+              </div>
+              <div class="strength-text" id="strength-text">Force du mot de passe</div>
+            </div>
+            <div class="error-msg" id="err-reg-password">Minimum 8 caractères requis</div>
+          </div>
+          <button class="btn-submit" id="btn-register" onclick="handleRegister()">Créer mon compte →</button>
+          <div class="divider"><div class="divider-line"></div><div class="divider-text">Ou inscris-toi avec</div><div class="divider-line"></div></div>
+          <button class="social-btn" onclick="window.location.href='onboarding.html'"><span class="s-icon">📘</span><span class="s-text">Continuer avec Facebook</span><span class="s-arrow">→</span></button>
+          <button class="social-btn" onclick="window.location.href='onboarding.html'"><span class="s-icon">🎵</span><span class="s-text">Continuer avec TikTok</span><span class="s-arrow">→</span></button>
+          <button class="social-btn" onclick="window.location.href='onboarding.html'"><span class="s-icon">📸</span><span class="s-text">Continuer avec Instagram</span><span class="s-arrow">→</span></button>
+          <div class="terms">En créant un compte tu acceptes nos <a href="#">Conditions d'utilisation</a> et notre <a href="#">Politique de confidentialité</a></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <a href="index.html">← Retour à l'accueil</a> &nbsp;·&nbsp; © 2025 ShopiCI · Abidjan 🇨🇮
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+    }
+    function togglePwd(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+      else { input.type = 'password'; btn.textContent = '👁️'; }
+    }
+    function checkStrength(input) {
+      const val = input.value;
+      const box = document.getElementById('strength-box');
+      const text = document.getElementById('strength-text');
+      const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3'), document.getElementById('bar4')];
+      if (val.length === 0) { box.classList.remove('show'); return; }
+      box.classList.add('show');
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      bars.forEach((bar, i) => {
+        bar.className = 'strength-bar';
+        if (i < score) {
+          if (score <= 1) bar.classList.add('weak');
+          else if (score <= 2) bar.classList.add('medium');
+          else bar.classList.add('strong');
+        }
+      });
+      const labels = ['', 'Faible', 'Moyen', 'Fort', 'Très fort'];
+      text.textContent = labels[score] || 'Trop court';
+    }
+    function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+    function handleLogin() {
+      let valid = true;
+      const email = document.getElementById('login-email');
+      const password = document.getElementById('login-password');
+      document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+      document.querySelectorAll('input').forEach(i => i.classList.remove('error'));
+      if (!isValidEmail(email.value)) { document.getElementById('err-login-email').classList.add('show'); email.classList.add('error'); valid = false; }
+      if (password.value.length < 6) { document.getElementById('err-login-password').classList.add('show'); password.classList.add('error'); valid = false; }
+      if (valid) {
+        const btn = document.getElementById('btn-login');
+        btn.textContent = 'Connexion en cours...';
+        btn.classList.add('loading');
+        setTimeout(() => { window.location.href = 'onboarding.html'; }, 1500);
+      }
+    }
+    function handleRegister() {
+      let valid = true;
+      const name = document.getElementById('reg-name');
+      const email = document.getElementById('reg-email');
+      const phone = document.getElementById('reg-phone');
+      const password = document.getElementById('reg-password');
+      document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('show'));
+      document.querySelectorAll('input').forEach(i => i.classList.remove('error'));
+      if (name.value.trim().length < 3) { document.getElementById('err-reg-name').classList.add('show'); name.classList.add('error'); valid = false; }
+      if (!isValidEmail(email.value)) { document.getElementById('err-reg-email').classList.add('show'); email.classList.add('error'); valid = false; }
+      if (phone.value.trim().length < 8) { document.getElementById('err-reg-phone').classList.add('show'); phone.classList.add('error'); valid = false; }
+      if (password.value.length < 8) { document.getElementById('err-reg-password').classList.add('show'); password.classList.add('error'); valid = false; }
+      if (valid) {
+        const btn = document.getElementById('btn-register');
+        btn.textContent = 'Création en cours...';
+        btn.classList.add('loading');
+        setTimeout(() => {
+          document.getElementById('success-box').classList.add('show');
+          setTimeout(() => { window.location.href = 'onboarding.html'; }, 2000);
+        }, 1500);
+      }
+    }
+  </script>
+</body>
+</html>
